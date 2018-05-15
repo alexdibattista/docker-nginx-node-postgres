@@ -1,4 +1,4 @@
-#Onboarding
+# Onboarding
 
 1. Download [Docker CE](https://store.docker.com/editions/community/docker-ce-desktop-mac)
 
