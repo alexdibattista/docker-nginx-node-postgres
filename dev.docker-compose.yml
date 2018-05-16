@@ -43,10 +43,7 @@ services:
     depends_on:
       - 'db'
   db:
-    build:
-      context: .
-      dockerfile: db.dev.Dockerfile
     env_file: psql.env
-    image: app-db
+    image: postgres:10.3
     ports:
       - '5431:5432'
