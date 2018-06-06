@@ -1,0 +1,72 @@
+version: '2'
+services:
+  redis:
+    image: redis
+    ports:
+      - '6379:6379'
+  server:
+    image: nginx
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./config/nginx/nginx.dev.conf:/etc/nginx/nginx.conf
+      - ./config/nginx/ssl/server.crt:/etc/nginx/ssl/nginx.crt
+      - ./config/nginx/ssl/server.key:/etc/nginx/ssl/nginx.key
+      - ./config/nginx/html/404.html:/var/www/html/404.html
+      - ./config/nginx/mime.types:/etc/nginx/mime.types
+    links:
+      - api:api
+      - app:app
+  app:
+    build:
+      context: .
+      dockerfile: FE/app.dev.Dockerfile
+    image: app-server
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ../app:/var/www/app
+    ports:
+      - '3000:3000'
+  api:
+    build:
+      context: .
+      dockerfile: API/api.dev.Dockerfile
+    image: api-server
+    environment:
+      - DB_NAME=rsvpDB
+      - DB_USER=rsvpPostgres
+      - DB_PASSWORD=rsvp123
+      - DB_URL=db
+      - DB_HOST=5432
+      - NODE_ENV=development
+    links:
+      - db:db
+      - redis:redis
+    volumes:
+      - ../api:/var/www/api
+      - ../api/node_modules:/var/www/api/node_modules
+    ports:
+      - '8080'
+    depends_on:
+      - 'db'
+      - 'redis'
+      - 'mongo'
+    command: [ "npm", "start"]
+  mongo:
+    image: mongo
+    volumes:
+      - ./data/mongo:/data/db
+    ports:
+      - "27017:27017"
+  db:
+    image: postgres:9.6.2
+    volumes:
+      - ./docker-postgres:/docker-entrypoint-initdb.d
+    environment:
+      - POSTGRES_MULTIPLE_DATABASES="rsvpDB","rsvpDBTest"
+      - POSTGRES_USER=rsvpPostgres
+      - POSTGRES_PASSWORD=rsvp123
+    ports:
+      - '5431:5432'

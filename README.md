@@ -1,4 +1,4 @@
-#Onboarding
+# Onboarding
 
 1. Download [Docker CE](https://store.docker.com/editions/community/docker-ce-desktop-mac)
 
@@ -14,6 +14,17 @@
 7. Run `npm run dev:up`
 	- check the url `locahost` and `localhost/api`
 
+# HTTPS
+
+You shouldn't have to do anything other then added the PEM file to keychain.
+
+1. Open Keychain
+2. Click `Certificates` under Category
+3. Click `File` -> `Import File` -> Navigate to the `config/nginx/ssl` and click on the rootCA.pem file
+4. Right Click on the `RSVP` certificate 
+5. Click `Get Info` 
+6. Click the Arrow to the left of `trust`
+7. Change `When using this certificate` to `Always Trust`
 
 
 
